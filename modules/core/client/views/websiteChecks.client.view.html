@@ -1,0 +1,58 @@
+<section ng-controller="WebsiteChecksController">
+  <h2><a href="{{url}}">{{url}}</a></h2>
+
+  <table class="table table-striped" ng-if="websiteChecks.length > 0">
+    <thead>
+    <tr>
+      <th># resources</th>
+      <th>Size</th>
+      <th>Total Time</th>
+      <th>Max Time</th>
+      <th>Min Time</th>
+      <th>Average Time</th>
+      <th>Date</th>
+      <th>Details</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="w in websiteChecks | orderBy: '-createdAt'">
+      <th>{{w.stats.resourceNumber}}</th>
+      <th>{{(w.stats.totalSize/1024).toFixed(2)}} kb</th>
+      <th>{{(w.stats.totalTime/1000).toFixed(2)}} s</th>
+      <th>{{(w.stats.slowestRequest/1000).toFixed(2)}} s</th>
+      <th>{{(w.stats.fastestRequest/1000).toFixed(2)}} s</th>
+      <th>{{(w.stats.avgTime/1000).toFixed(2)}} s</th>
+      <th>{{w.createdAt | date : 'M/d/yy H:mm'}}</th>
+      <th><a class="btn btn-primary btn-xs" ui-sref="websiteCheck({_id: w._id})">View Details</a></th>
+    </tr>
+    </tbody>
+  </table>
+
+
+  <h2 ng-if="websiteChecks.length > 1">By Resource</h2>
+  <table class="table table-striped" ng-if="websiteChecks.length > 1">
+    <thead>
+    <tr>
+      <th>Path</th>
+      <th>Type</th>
+      <th>Size</th>
+      <th>Max Time</th>
+      <th>Min Time</th>
+      <th>Max Latency</th>
+      <th>Min Latency</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="(path, stats) in resourcesList">
+      <th>{{path | limitTo: 40}}</th>
+      <th>{{stats.resourceType}}</th>
+      <th>{{(stats.size/1024).toFixed(2)}} kb</th>
+      <th>{{(stats.slowestRequest/1000).toFixed(2)}} s</th>
+      <th>{{(stats.fastestRequest/1000).toFixed(2)}} s</th>
+      <th>{{stats.maxLatency}} ms</th>
+      <th>{{stats.minLatency}} ms</th>
+    </tr>
+    </tbody>
+  </table>
+
+</section>

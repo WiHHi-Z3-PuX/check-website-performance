@@ -1,0 +1,117 @@
+<section ng-controller="HomeController">
+
+  <form class="form" name="websiteForm" ng-submit="create()" ng-show="!querySent" novalidate>
+      <div class="form-group">
+        <!--<div class="col-xs-2">-->
+          <!--<label for="website">Website</label>-->
+        <!--</div>-->
+        <div class="col-xs-8">
+          <input name="website" type="url" ng-model="website" class="form-control" id="website" placeholder="Website" required>
+        </div>
+    </div>
+    <div class="col-xs-2">
+      <button type="submit" class="btn btn-default" ng-disabled="websiteForm.$invalid">Check performance</button>
+    </div>
+  </form>
+
+  <div class="alert alert-info" role="alert" ng-show="querySent" ng-if="!queryDone">Checking <a href="{{website}}" class="alert-link">{{website}}</a></div>
+
+  <div class="alert alert-success" role="alert" ng-show="queryDone">Checking <a href="{{website}}" class="alert-link">{{website}}</a> complete</div>
+
+  <div>{{error}}</div>
+
+  <div class="col-xs-12" ng-if="messages.length > 0">
+    <div class="col-xs-2">
+      <h3>Requests #:</h3>
+      <h3>{{totalRequests}}</h3>
+    </div>
+
+    <div class="col-xs-2">
+      <h3>Max Time:</h3>
+      <h3>{{(slowestRequest/1000).toFixed(2)}} s</h3>
+    </div>
+
+    <div class="col-xs-2">
+      <h3>Min Time:</h3>
+      <h3>{{(fastestRequest/1000).toFixed(2)}} s</h3>
+    </div>
+
+    <div class="col-xs-2">
+      <h3>Avg Time:</h3>
+      <h3>{{(avgTime/1000).toFixed(2)}} s</h3>
+    </div>
+
+    <div class="col-xs-2">
+      <h3>Total Size:</h3>
+      <h3>{{(totalSize/1024).toFixed(2)}} kb</h3>
+    </div>
+
+    <div class="col-xs-2">
+      <h3>Total Time:</h3>
+      <h3>{{(totalTime/1000).toFixed(2)}} s</h3>
+    </div>
+  </div>
+
+
+  <div class="col-lg-8 col-sm-12" id="line-chart" ng-if="messages.length > 0">
+    <div class="panel panel-default">
+      <div class="panel-heading">Request Time</div>
+        <div class="panel-body">
+          <canvas id="line" class="chart chart-line" chart-data="linechartdata" chart-labels="linechartlabels"
+          chart-click="onClick" chart-hover="onHover" chart-series="series" chart-options="options"
+          chart-dataset-override="datasetOverride"></canvas>
+        </div>
+    </div>
+  </div>
+
+
+  <div class="col-lg-4 col-sm-12" id="line-chart" ng-if="messages.length > 0">
+    <div class="panel panel-default">
+      <div class="panel-heading">Request Types</div>
+      <div class="panel-body">
+        <canvas id="pie" class="chart chart-pie"
+                chart-data="pieData" chart-labels="pieLabels" chart-options="pieOptions">
+        </canvas>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="col-xs-12" ng-if="messages.length > 0">
+    <button class="btn btn-default" ng-click="setOrder('-time')">sort by time</button>
+    <button class="btn btn-default" ng-click="setOrder('-latency')">sort by latency</button>
+    <button class="btn btn-default" ng-click="setOrder('resourceNumber')">sort by request number</button>
+    <!--{{order}}-->
+  </div>
+
+
+  <table class="table table-striped" ng-if="messages.length > 0">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Path</th>
+      <th>Size</th>
+      <th>Type</th>
+      <th>Speed</th>
+      <th>Latency</th>
+      <th>Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="r in messages | orderBy: order">
+      <th>{{r.resourceNumber}}</th>
+      <th>{{r.path | limitTo: 40}}</th>
+      <th>{{(r.size / 1024).toFixed(2)}} kb</th>
+      <th>{{r.resourceType}}</th>
+      <th>{{r.speed}}</th>
+      <th>{{r.latency}} ms</th>
+      <th>{{(r.time/1000).toFixed(2)}} s</th>
+    </tr>
+    </tbody>
+  </table>
+
+  <button type="button" class="btn btn-primary btn-lg" ng-if="queryDone" ng-click="reset()">Check another website</button>
+
+  <a type="button" class="btn btn-primary btn-lg" ng-if="queryDone" ui-sref="websiteChecks({url: website})">See previous checks</a>
+</section>

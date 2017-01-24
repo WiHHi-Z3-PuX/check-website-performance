@@ -1,0 +1,24 @@
+<section ng-controller="WebsitesController">
+  <!--<div ng-repeat="w in websites">-->
+    <!--{{w}}-->
+  <!--</div>-->
+
+  <table class="table table-striped" ng-if="websites.length > 0">
+    <thead>
+    <tr>
+      <th>URL</th>
+      <th># checks</th>
+      <th>Last Check</th>
+      <th>Details</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="w in websites | orderBy: '-lastChecked'">
+      <th><a href="{{w.url}}">{{w.url}}</a></th>
+      <th>{{w.checks}}</th>
+      <th>{{w.lastChecked | date : 'M/d/yy H:mm'}}</th>
+      <th><a class="btn btn-primary btn-xs" ui-sref="websiteChecks({url: w.url})">View Details</a></th>
+    </tr>
+    </tbody>
+  </table>
+</section>
